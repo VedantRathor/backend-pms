@@ -73,7 +73,8 @@ app.use(express.urlencoded({ extended: false }))
 //     next();
     
 //   });
-  app.use("/uploaded-image", express.static(path.join(__dirname, "uploads")));
+app.use("/uploaded-image", express.static(path.join(__dirname, "../storage/uploads")));
+;
 app.use(router);
 
 
