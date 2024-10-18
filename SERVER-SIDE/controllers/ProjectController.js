@@ -283,10 +283,28 @@ const getMemberByproject_idNotInvolved = async (req, res) => {
         const userdata = res.locals.user;
         const {company_id} = userdata;
         const project_id = req.params.project_id
-        const result = await db.sequelize.query('select t.* from (select u.user_id , u.name , count(a.user_id) as ct from userinfos u left join assignments a on u.user_id = a.user_id WHERE u.role = 3 and company_id = ? group by (u.user_id) order by a.user_id) t where t.user_id not in (select user_id from assignments where project_id = ? and company_id = ?)', {
-            replacements: [project_id,company_id],
+        const result = await db.sequelize.query(`
+            SELECT t.* 
+            FROM (
+                SELECT u.user_id, u.name, COUNT(a.user_id) AS ct 
+                FROM userinfos u 
+                LEFT JOIN assignments a 
+                ON u.user_id = a.user_id 
+                WHERE u.role = 3 
+                AND u.company_id = ? 
+                GROUP BY u.user_id 
+                ORDER BY a.user_id
+            ) t 
+            WHERE t.user_id NOT IN (
+                SELECT user_id 
+                FROM assignments 
+                WHERE project_id = ? 
+                AND company_id = ?
+            )
+        `, {
+            replacements: [company_id, project_id, company_id],
             type: QueryTypes.SELECT,
-        })
+        });
         service.successRetrievalResponse(res, 'retrieved members not involved in a project', result)
     } catch (error) {
         console.log(error)
