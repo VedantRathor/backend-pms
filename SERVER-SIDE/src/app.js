@@ -24,19 +24,6 @@ const notification = db.notification
 // })
 // Initialize Socket.IO with the server
 
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*'); // Allow all origins // Specify your exact origin
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    
-    // Handle preflight requests
-    if (req.method === 'OPTIONS') {
-        return res.sendStatus(204); // No Content
-    }
-    
-    next();
-});
-
 
 app.use(cors({
     origin: 'https://project-managementt-system.netlify.app', // Adjust to your frontend URL

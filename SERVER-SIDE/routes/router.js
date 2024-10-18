@@ -57,7 +57,7 @@ router.get('/api/attendance-portal/get-attendance' , authIslogin ,  AttendanceCo
 router.get('/notification/:view',authIslogin, UserController.getNotifications)
 
 //UserController
-router.post('/Login',UserController.loginUserByEmailPass)
+router.post('/apii/Login',UserController.loginUserByEmailPass)
 router.post('/register',authIslogin, UserController.adduser)
 router.get('/api/allusers',authIslogin,UserController.getAllUsers) ;
 router.post('/update-user',authIslogin,UserController.updateUserInfo) ;
