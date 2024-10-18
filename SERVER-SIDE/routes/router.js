@@ -26,19 +26,22 @@ router.use(express.json())
 router.use(bodyParser.urlencoded({extended:false}))
 router.use(express.urlencoded({extended:false}))
 
+const uploadDir = path.join(__dirname, '../storage/uploads');
+
+// Check if the directory exists, if not, create it
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    let folder = "./files"; // Default folder for PDFs
-
-    if (file.mimetype.startsWith("image")) {
-      folder = "/app/storage/uploads"; // Updated folder for images in mounted volume
-    }
+    let folder = uploadDir; // Set the folder to the volume path for images
 
     cb(null, folder);
   },
   filename: function (req, file, cb) {
-    const uniqueName = Date.now() + '-' + file.originalname; // Create a unique filename
-    cb(null, uniqueName); // Save with the unique name
+    const uniqueName = Date.now() + '-' + file.originalname;
+    cb(null, uniqueName);
   },
 });
 
