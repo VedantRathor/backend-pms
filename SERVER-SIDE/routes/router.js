@@ -76,7 +76,7 @@ router.get('/project/query',authIslogin,ProjectController.getProjectByproject_na
 router.get('/manager',authIslogin,ProjectController.getManagers)
 router.get('/project-details-project/:project_id',authIslogin,ProjectController.projectDetailByproject_id)
 router.get('/project-details-members/:project_id', authIslogin,ProjectController.memberByproject_id)
-router.get('/project/members/not-invlolved/:project_id' , ProjectController.getMemberByproject_idNotInvolved)
+router.get('/project/members/not-invlolved/:project_id' , authIslogin,ProjectController.getMemberByproject_idNotInvolved)
 
 //AssignController
 router.post('/assignment',authIslogin,AssignController.assignMembers)

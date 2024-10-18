@@ -280,9 +280,11 @@ const getManagers = async (req, res) => {
 // this method: Retrieves all the Employees who are not assigned in a particular project
 const getMemberByproject_idNotInvolved = async (req, res) => {
     try {
+        const userdata = res.locals.user;
+        const {company_id} = userdata;
         const project_id = req.params.project_id
-        const result = await db.sequelize.query('select t.* from (select u.user_id , u.name , count(a.user_id) as ct from userinfos u left join assignments a on u.user_id = a.user_id WHERE u.role = 3 group by (u.user_id) order by a.user_id) t where t.user_id not in (select user_id from assignments where project_id = ?)', {
-            replacements: [project_id],
+        const result = await db.sequelize.query('select t.* from (select u.user_id , u.name , count(a.user_id) as ct from userinfos u left join assignments a on u.user_id = a.user_id WHERE u.role = 3 group by (u.user_id) order by a.user_id) t where t.user_id not in (select user_id from assignments where project_id = ? and company_id = ?)', {
+            replacements: [project_id,company_id],
             type: QueryTypes.SELECT,
         })
         service.successRetrievalResponse(res, 'retrieved members not involved in a project', result)
