@@ -56,39 +56,10 @@ const adduser = async (req, res) => {
 
 // This Method: Used for authentication and Login.
 const loginUserByEmailPass = async (req, res) => {
-    try {
-        const { email, password , company_registration_number} = req.body;
-        const CompanyId = await company.findOne({where:{company_registration_number:company_registration_number}});
-        if( CompanyId){
-            const emailExists = await userinfo.FindUser(email,CompanyId.company_id);
-
-        if (emailExists != null) {
-            // check for password ! 
-            if (password == emailExists.password) {
-                // generate token 
-                const token = await service.generateToken(email);
-                // update it 
-                await userinfo.updateUser(token, emailExists.email);
-                // let result = await userinfo.FindUser(email,CompanyId.company_id);
-                let result = await  userinfo.findOne({ where: { email: email, company_id : CompanyId.company_id},
-                    attributes:['name','email','created_at','updated_at','role','user_id','profile','company_id','token'] });
-                service.successRetrievalResponse(res, 'login succesful', result)
-
-            } else {
-                service.failRetrievalResponse(res, 'passwords not matched')
-            }
-        } else {
-            service.failRetrievalResponse(res, 'email doesnot exists')
-        }
-        }else{
-            service.failRetrievalResponse(res,'company id is wrong');
-        }
-        
-
-    } catch (error) {
-        console.log(error)
-        service.serverSideError(res)
-    }
+    res.json({
+        msg : 'hey'
+    })
+    
 }
 
 async function UpdateDetails(req, res) {
