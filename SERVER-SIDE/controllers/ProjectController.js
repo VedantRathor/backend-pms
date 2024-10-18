@@ -12,7 +12,7 @@ const service = require('../services/service')
 const jwt = require('jsonwebtoken')
 const authIslogin = require('../middlewares/authIslogin');
 const { SERIALIZABLE } = require('sequelize/lib/table-hints');
-const { Socket } = require('socket.io');
+// const { Socket } = require('socket.io');
 
 // this method: Adds a new project by Super Admin
 
@@ -30,14 +30,14 @@ const addNewProject = async (req, res) => {
             // here i want to emit the event ! 
             
             const manager_id = req.body.manager_id ;
-            const socket = req.users.get(manager_id)
+            // const socket = req.users.get(manager_id)
             console.log(manager_id)
-            console.log('socket socket',socket)
+            // console.log('socket socket',socket)
             console.log(req.users)
-            if( socket ){
+            // if( socket ){
                 
-                socket.emit('alert',`Project: ${req.body.project_name} assigned to you!!`)
-            }
+            //     socket.emit('alert',`Project: ${req.body.project_name} assigned to you!!`)
+            // }
             // insert this in notification table ! 
             await notification.create({
                 user_id : manager_id ,
