@@ -9,7 +9,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const http = require('http')    
 // const { Server } = require('socket.io')
-const server = http.createServer(app)
+// const server = http.createServer(app)
 const userinfo = db.userinfo
 const project = db.project
 const assignment = db.assignment
@@ -24,15 +24,31 @@ const notification = db.notification
 // })
 // Initialize Socket.IO with the server
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://project-managementt-system.netlify.app'); // Specify your exact origin
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(204); // No Content
+    }
+    
+    next();
+});
+
+
 app.use(cors({
     origin: 'https://project-managementt-system.netlify.app', // Adjust to your frontend URL
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
 }));
+
+
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.urlencoded({ extended: false }))
-const users = new Map();
+// const users = new Map();
     
 // io.on('connection', (socket) => {   
 
@@ -65,17 +81,17 @@ const users = new Map();
 //     })
 // })
 
-app.use((req, res, next) => {
-    req.users = users;
-    next();
+// app.use((req, res, next) => {
+//     req.users = users;
+//     next();
     
-  });
+//   });
   app.use("/uploaded-image", express.static(path.join(__dirname, "uploads")));
 app.use(router);
 
 
 
 
-server.listen(process.env.PORT, () => {
+app.listen(process.env.PORT, () => {
     console.log('Listening OK at 7007')
 })
