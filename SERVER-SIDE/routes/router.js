@@ -31,20 +31,18 @@ const storage = multer.diskStorage({
     let folder = "./files"; // Default folder for PDFs
 
     if (file.mimetype.startsWith("image")) {
-      folder = "./uploads"; // Folder for images
+      folder = "/app/storage/uploads"; // Updated folder for images in mounted volume
     }
 
     cb(null, folder);
   },
   filename: function (req, file, cb) {
-    const uniqueName = Date.now() + '-' + file.originalname;
-    file.originalname = uniqueName;
-    cb(null, uniqueName);
+    const uniqueName = Date.now() + '-' + file.originalname; // Create a unique filename
+    cb(null, uniqueName); // Save with the unique name
   },
 });
 
-var upload = multer({storage:storage});
-
+var upload = multer({ storage: storage });
 //CompanyContorller
 router.post('/api/company-controller/register-company',CompanyController.registerCompany);
 

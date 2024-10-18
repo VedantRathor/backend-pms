@@ -202,39 +202,37 @@ const updateUserInfo = async(req,res) => {
     }
 }
 
-const update_user_profile = async(req,res) => {
-
+const update_user_profile = async (req, res) => {
     try {
         const userdata = res.locals.user;
-        const {company_id} = userdata;
-        const {role,email} = req.body ;
-        let profileImage = req.file.originalname;
-    
-        if( role == 0 ){
-            service.failRetrievalResponse(res,'Please Select Valid Role') ;
-        }else{
-            const result = await userinfo.findAll({where:{email:email,company_id:company_id}}) ;
-                if( result.length == 0 ){
-                   service.failRetrievalResponse(res,'User Does not Exists') ;
-                }else{
-                    
-                        // do normal update, only in role and name
-                        await userinfo.update({
-                           profile : profileImage
-                        },{
-                            where : {
-                                user_id : result[0].user_id ,
-                                company_id:company_id
-                            }
-                        });
-                        service.successRetrievalResponse(res,'Updation Succesfull') ; 
-                    
-                }
-           
+        const { company_id } = userdata;
+        const { role, email } = req.body;
+
+        // Get the filename from the uploaded file
+        let profileImage = req.file ? req.file.filename : null; // Use req.file.filename instead of req.file.originalname
+
+        if (role == 0) {
+            service.failRetrievalResponse(res, 'Please Select Valid Role');
+        } else {
+            const result = await userinfo.findAll({ where: { email: email, company_id: company_id } });
+            if (result.length == 0) {
+                service.failRetrievalResponse(res, 'User Does not Exists');
+            } else {
+                // Update the profile image and other fields if needed
+                await userinfo.update({
+                    profile: profileImage // Save the filename in the database
+                }, {
+                    where: {
+                        user_id: result[0].user_id,
+                        company_id: company_id
+                    }
+                });
+                service.successRetrievalResponse(res, 'Updation Successful');
+            }
         }
     } catch (error) {
-        console.log('error in updateUserProfile',error);
-        service.serverSideError(res) ;
+        console.log('error in updateUserProfile', error);
+        service.serverSideError(res);
     }
 }
 
