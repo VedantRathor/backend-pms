@@ -18,8 +18,8 @@ const log = db.log
 const notification = db.notification
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:5173',
-        methods: ['GET', 'POST']
+        origin: 'https://project-managementt-system.netlify.app',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     }
 })
 // Initialize Socket.IO with the server
