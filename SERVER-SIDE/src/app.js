@@ -27,7 +27,7 @@ const io = new Server(server, {
 app.use(cors({
     origin: 'https://project-managementt-system.netlify.app', // Adjust to your frontend URL
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
 }));
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }))
