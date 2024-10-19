@@ -56,6 +56,7 @@ const registerCompany = async (req, res) => {
                             }
                         )
                         result.company_id = CompanyId.company_id;
+                        result.company_name = CompanyId.company_name;
                         service.successRetrievalResponse(res,'company and admin is registered',result);
                         
                     }else{
