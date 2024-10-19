@@ -49,24 +49,52 @@ module.exports = (sequelize, DataTypes) => {
       return project.findAll(query)
     }
 
-    static searchTaskInProject(project,task_name,userinfo,project_id,company_id){
-      return project.findAll({
-        include: [{
-            model: task,
-            where: {
-                task_name: {
-                    [Op.like]: `%${task_name}%`
-                }
-            },
-            include: [{
-                model: userinfo
-            }]
-        }],
-        where: {
-            project_id: project_id,
-            company_id:company_id
-        }
-    })
+    static searchTaskInProject(project,userinfo,project_id,company_id,taskName,taskStatus,taskOrder){
+         // Build the where conditions dynamically
+            const taskWhereClause = {};
+            const projectWhereClause = {
+                project_id: project_id,
+                company_id: company_id
+            };
+
+            // If taskName is provided, filter tasks based on taskName
+            if (taskName) {
+                taskWhereClause.task_name = {
+                    [Op.like]: `%${taskName}%`
+                };
+            }
+
+            // If taskStatus is provided, filter tasks based on taskStatus
+            if (taskStatus) {
+                taskWhereClause.status = taskStatus;
+            }
+
+            // Build the order array based on taskOrder
+            let orderClause = [];
+            if (taskOrder == 1) {
+                // Order by task.updated_at descending
+                orderClause = [['updated_at', 'DESC']];
+            } else if (taskOrder == 2) {
+                // Order by task.updated_at ascending
+                orderClause = [['updated_at', 'ASC']];
+            }
+
+            // Execute the query
+            return project.findAll({
+                include: [{
+                    model: task,
+                    required: false, // Apply tasks as LEFT JOIN to ensure all projects are fetched
+                    include: [{
+                        model: userinfo,
+                        required: false // Apply LEFT JOIN to userinfo to include related data
+                    }],
+                    // Task filters will be applied after all joins
+                    where: taskWhereClause
+                }],
+                where: projectWhereClause,
+                // Apply ordering based on task.updated_at
+                order: orderClause.length ? [[{ model: task }, 'updated_at', taskOrder == 1 ? 'DESC' : 'ASC']] : []
+            });
     }
 
   }

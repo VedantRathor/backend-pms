@@ -107,9 +107,13 @@ const taskBySearchQuery = async (req, res) => {
     try {
         const userdata = res.locals.user
         const { user_id, role,company_id } = userdata
-        const task_name = req.query.query
-        const project_id = req.params.project_id
-        const result = await task.searchTaskInProject(project, task_name, userinfo, project_id,company_id)
+        const taskName = req.query.taskName;
+        const taskStatus = req.query.taskStatus;
+        const taskOrder = req.query.taskOrder;  
+        const project_id = req.params.project_id;
+        console.log(project_id,taskName,taskStatus,taskOrder);
+      
+        const result = await task.searchTaskInProject(project, userinfo, project_id,company_id,taskName,taskStatus,taskOrder)
         service.successRetrievalResponse(res, 'task retrieved succesfully', result)
     } catch (error) {
         console.log(error)
