@@ -49,94 +49,162 @@ module.exports = (sequelize, DataTypes) => {
 
       });
     }
-    static async getAllLogs(project,task,log,userinfo,project_id,status,sortby,searchBy,company_id,user_id,role,assignment){
+    // static async getAllLogs(project,task,log,userinfo,project_id,status,sortby,searchBy,company_id,user_id,role,assignment){
+  
+    //   let query = {
+    //     include: [{
+    //       model: task,
+    //       include: [{
+    //         model: log,
+
+    //         // order: [['created_at', 'ASC']], // Order by created_at field of log model
+
+    //         include: [{
+    //           model: userinfo
+    //         }],
+
+
+    //       }]
+    //     }],
+    //     where : {
+    //       company_id : company_id
+    //     }
+
+
+    //   }
+      
+    //   if( project_id != 0 && project_id != undefined ){
+    //     query.where.project_id = project_id;
+    //   }else{
+    //     // get the list of projects i am assigned in
+    //     if( role == 3 ){
+    //       console.log('ASSIGNED TO:','uhk');
+    //       const assigned_in = await project.employeeFindAll(userinfo, assignment, user_id,company_id);
+    //       if( assigned_in && assigned_in.length != 0){
+    //         const projectIds = assigned_in.map(project => project.project_id);
+      
+    //           // Apply the condition: WHERE project_id IN (p1, p2, p3)
+    //           query.where.project_id = {
+    //             [Op.in]: projectIds
+    //           };
+    //       }
+    //     }
+
+    //     if( role == 2 ) {
+    //         // manager!
+    //         let query_manager = {
+    //           include: [{ model: userinfo, attributes: ['name'] }],
+    //         };
+            
+    //         query_manager.where = { manager_id: user_id , company_id:company_id};
+    //           const result = await project.findAll(query_manager);
+    //           if( result && result.length != 0 ) {
+    //             const projectIds = result.map(project => project.project_id);
+    //               query.where.project_id = {
+    //                 [Op.in]: projectIds
+    //               };
+    //           }
+    //     }
+        
+        
+    //   }
+    //   if( status != 'n'){
+    //         // query.include[0].include[0].order[0][1] = 'ASC'
+         
+    //         query.include[0].include[0].where={
+    //           logstatus : status
+    //         }
+    //   }
+      
+    //   if( sortby != 0 ){
+    //     let sorting = 'ASC'
+    //     if( sortby == 1 ) sorting = 'DESC'
+    //     query.include[0].include[0].separate=true,
+    //     query.include[0].include[0].order[0] = ['created_at',sorting]
+    //   }
+
+    // //   task_name: {
+    // //     [Op.like]: `%${task_name}%`
+    // // }
+    //   if( searchBy != '' && searchBy!= 'undefined'){
+    //     query.include[0].include[0].include[0].where = {
+    //       name : {
+    //         [Op.like] : `%${searchBy}%`
+    //       }
+    //     }
+    //   }
+
+    //   return project.findAll(query);
+    // }
+
+    static async getAllLogs(project, task, log, userinfo, project_id, status, sortby, searchBy, company_id, user_id, role, assignment) {
   
       let query = {
         include: [{
           model: task,
           include: [{
             model: log,
-
-            order: [['created_at', 'ASC']], // Order by created_at field of log model
-
             include: [{
               model: userinfo
-            }],
-
-
+            }]
           }]
         }],
-        where : {
-          company_id : company_id
+        where: {
+          company_id: company_id
         }
-
-
-      }
-      
-      if( project_id != 0 && project_id != undefined ){
+      };
+    
+      // Handle project-based filtering logic
+      if (project_id != 0 && project_id != undefined) {
         query.where.project_id = project_id;
-      }else{
-        // get the list of projects i am assigned in
-        if( role == 3 ){
-          console.log('ASSIGNED TO:','uhk');
-          const assigned_in = await project.employeeFindAll(userinfo, assignment, user_id,company_id);
-          if( assigned_in && assigned_in.length != 0){
+      } else {
+        if (role == 3) {
+          const assigned_in = await project.employeeFindAll(userinfo, assignment, user_id, company_id);
+          if (assigned_in && assigned_in.length != 0) {
             const projectIds = assigned_in.map(project => project.project_id);
-      
-              // Apply the condition: WHERE project_id IN (p1, p2, p3)
-              query.where.project_id = {
-                [Op.in]: projectIds
-              };
+            query.where.project_id = { [Op.in]: projectIds };
           }
         }
-
-        if( role == 2 ) {
-            // manager!
-            let query_manager = {
-              include: [{ model: userinfo, attributes: ['name'] }],
-            };
-            
-            query_manager.where = { manager_id: user_id , company_id:company_id};
-              const result = await project.findAll(query_manager);
-              if( result && result.length != 0 ) {
-                const projectIds = result.map(project => project.project_id);
-                  query.where.project_id = {
-                    [Op.in]: projectIds
-                  };
-              }
+    
+        if (role == 2) {
+          let query_manager = {
+            include: [{ model: userinfo, attributes: ['name'] }]
+          };
+          query_manager.where = { manager_id: user_id, company_id: company_id };
+          const result = await project.findAll(query_manager);
+          if (result && result.length != 0) {
+            const projectIds = result.map(project => project.project_id);
+            query.where.project_id = { [Op.in]: projectIds };
+          }
         }
-        
-        
       }
-      if( status != 'n'){
-            // query.include[0].include[0].order[0][1] = 'ASC'
-         
-            query.include[0].include[0].where={
-              logstatus : status
-            }
+    
+      // Apply status filter
+      if (status != 'n') {
+        query.include[0].include[0].where = { logstatus: status };
       }
-      
-      if( sortby != 0 ){
-        let sorting = 'ASC'
-        if( sortby == 1 ) sorting = 'DESC'
-        query.include[0].include[0].separate=true,
-        query.include[0].include[0].order[0] = ['created_at',sorting]
-      }
-
-    //   task_name: {
-    //     [Op.like]: `%${task_name}%`
-    // }
-      if( searchBy != '' && searchBy!= 'undefined'){
+    
+      // Apply search filter on log's `name` field
+      if (searchBy != '' && searchBy != 'undefined') {
         query.include[0].include[0].include[0].where = {
-          name : {
-            [Op.like] : `%${searchBy}%`
-          }
-        }
+          name: { [Op.like]: `%${searchBy}%` }
+        };
       }
-
+    
+      // Apply ordering at the very end based on `updated_at` of the log model
+      if (sortby != 0) {
+        let sorting = sortby == 1 ? 'DESC' : 'ASC';
+        
+        // Corrected order to directly sort by `log.updated_at`
+        query.order = [
+          ['log', 'updated_at', sorting]
+        ];
+      }
+    
       return project.findAll(query);
     }
 
+    
     static associate(models) {
       // define association here
     }
