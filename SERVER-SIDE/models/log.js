@@ -137,6 +137,73 @@ module.exports = (sequelize, DataTypes) => {
     //   return project.findAll(query);
     // }
 
+    // static async getAllLogs(project, task, log, userinfo, project_id, status, sortby, searchBy, company_id, user_id, role, assignment) {
+  
+    //   let query = {
+    //     include: [{
+    //       model: task,
+    //       include: [{
+    //         model: log,
+    //         include: [{
+    //           model: userinfo
+    //         }]
+    //       }]
+    //     }],
+    //     where: {
+    //       company_id: company_id
+    //     }
+    //   };
+    
+    //   // Handle project-based filtering logic
+    //   if (project_id != 0 && project_id != undefined) {
+    //     query.where.project_id = project_id;
+    //   } else {
+    //     if (role == 3) {
+    //       const assigned_in = await project.employeeFindAll(userinfo, assignment, user_id, company_id);
+    //       if (assigned_in && assigned_in.length != 0) {
+    //         const projectIds = assigned_in.map(project => project.project_id);
+    //         query.where.project_id = { [Op.in]: projectIds };
+    //       }
+    //     }
+    
+    //     if (role == 2) {
+    //       let query_manager = {
+    //         include: [{ model: userinfo, attributes: ['name'] }]
+    //       };
+    //       query_manager.where = { manager_id: user_id, company_id: company_id };
+    //       const result = await project.findAll(query_manager);
+    //       if (result && result.length != 0) {
+    //         const projectIds = result.map(project => project.project_id);
+    //         query.where.project_id = { [Op.in]: projectIds };
+    //       }
+    //     }
+    //   }
+    
+    //   // Apply status filter
+    //   if (status != 'n') {
+    //     query.include[0].include[0].where = { logstatus: status };
+    //   }
+    
+    //   // Apply search filter on log's `name` field
+    //   if (searchBy && searchBy != '' && searchBy != 'undefined') {
+    //     query.include[0].include[0].include[0].where = {
+    //       name: { [Op.like]: `%${searchBy}%` }
+    //     };
+    //   }
+    
+    //   // Apply ordering at the very end based on `updated_at` of the log model
+    //   if (sortby != 0) {
+    //     let sorting = sortby == 1 ? 'DESC' : 'ASC';
+        
+    //     // Corrected order to directly sort by `log.updated_at`
+    //     query.order = [
+    //       ['log', 'updated_at', sorting]
+    //     ];
+    //   }
+    
+    //   return project.findAll(query);
+    // }
+
     static async getAllLogs(project, task, log, userinfo, project_id, status, sortby, searchBy, company_id, user_id, role, assignment) {
   
       let query = {
@@ -185,7 +252,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     
       // Apply search filter on log's `name` field
-      if (searchBy != '' && searchBy != 'undefined') {
+      if (searchBy && searchBy != '' && searchBy != 'undefined') {
         query.include[0].include[0].include[0].where = {
           name: { [Op.like]: `%${searchBy}%` }
         };
@@ -195,14 +262,16 @@ module.exports = (sequelize, DataTypes) => {
       if (sortby != 0) {
         let sorting = sortby == 1 ? 'DESC' : 'ASC';
         
-        // Corrected order to directly sort by `log.updated_at`
+        // Here we use a top-level order clause with the log's updated_at field
         query.order = [
-          ['log', 'updated_at', sorting]
+          // Dot notation to specify `log.updated_at`
+          [{ model: task }, { model: log }, 'updated_at', sorting]
         ];
       }
     
       return project.findAll(query);
     }
+    
 
     
     static associate(models) {
