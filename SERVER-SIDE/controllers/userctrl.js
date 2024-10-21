@@ -248,6 +248,17 @@ const updateUserInfo = async(req,res) => {
     }
 }
 
+const uploadVideo = async(req,res) => {
+    try {
+        let videoPathName = req.file ? req.file.filename : null;
+        res.json({
+            "video path": videoPathName
+        });
+    } catch (error) {
+        console.log('error:' , error);
+    }
+}
+
 const update_user_profile = async (req, res) => {
     try {
         const userdata = res.locals.user;
@@ -289,5 +300,6 @@ module.exports = {
     getNotifications,
     getAllUsers,
     updateUserInfo,
-    update_user_profile
+    update_user_profile,
+    uploadVideo
 }

@@ -63,6 +63,7 @@ router.post('/register',authIslogin, UserController.adduser)
 router.get('/api/allusers',authIslogin,UserController.getAllUsers) ;
 router.post('/update-user',authIslogin,UserController.updateUserInfo) ;
 router.post('/update-user-profile',authIslogin,upload.single("profileImage"),UserController.update_user_profile) ;
+router.post('/upload-video',authIslogin,upload.single("videoName"), UserController.uploadVideo );
 
 
 //ProjectController
