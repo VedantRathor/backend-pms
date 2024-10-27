@@ -1,5 +1,7 @@
 'use strict';
 const { Op } = require('sequelize')
+const socket = require('../src/socket');
+
 const {
   Model
 } = require('sequelize');
@@ -21,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
 
     // This Method: used to retrieve project-detail
     static getProjectDetails(userinfo, project_id, company_id) {
+      
       return project.findAll({
         include: [{
           model: userinfo,

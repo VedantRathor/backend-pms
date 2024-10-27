@@ -47,6 +47,8 @@ db.log =  require('../models/log')(sequelize,DataTypes)
 db.notification = require('../models/notification')(sequelize,DataTypes)
 db.attendance_management = require('../models/attendance_management copy')(sequelize,DataTypes) ;
 db.company = require('../models/company')(sequelize,DataTypes);
+db.chat = require('../models/chat')(sequelize,DataTypes);
+
 
 
 // company
@@ -100,6 +102,9 @@ db.notification.belongsTo(db.company,{
 
 
 // user - logs
+
+
+
 db.userinfo.hasMany(db.log,{
   foreignKey : 'user_id'
 })

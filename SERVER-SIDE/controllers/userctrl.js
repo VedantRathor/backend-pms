@@ -1,4 +1,7 @@
-const { Model, QueryTypes, where } = require('sequelize')
+const {getIO} = require('../src/socket');
+
+
+const { Model, QueryTypes, where } = require('sequelize');
 const express = require('express');
 const db = require('../models/index')
 const { Op } = require('sequelize')
